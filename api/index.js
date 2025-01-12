@@ -1,4 +1,6 @@
 import pg from 'pg';
+import cors from "cors";
+import initializeDb from "./utils/db.js";
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 8080;

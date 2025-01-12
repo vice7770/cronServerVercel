@@ -1,6 +1,5 @@
 import pg from 'pg';
 import cors from 'cors';
-import initializeDb from "./api/weather.js";
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 8080;
@@ -17,6 +16,18 @@ const pool = new Pool({
         rejectUnauthorized: false
     }
 });
+
+const initializeDb = async (pool) => {
+  pool.on('connect', () => {
+      console.log('Connected to PostgreSQL');
+  });
+
+  pool.on('error', (err) => {
+      console.error('Error connecting to PostgreSQL', err);
+  });
+  
+  return pool;
+};
 
 initializeDb(pool)
 

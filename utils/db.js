@@ -9,3 +9,5 @@ const initializeDb = async (pool) => {
     
     return pool;
 };
+
+export default initializeDb;

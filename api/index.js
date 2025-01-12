@@ -1,4 +1,4 @@
-// index.js
+import pg from 'pg';
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 8080;

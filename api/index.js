@@ -1,7 +1,5 @@
 import pg from 'pg';
 import cors from 'cors';
-import upsertWeatherData from "./services/queryWeather.js";
-import upsertWeatherPrev2MonthsData from "./services/queryPrev2Months.js";
 import cron from 'node-cron';
 const express = require('express')
 const app = express()
@@ -36,6 +34,40 @@ initializeDb(pool)
 
 app.use(cors({ credentials: false, origin: "*" }));
 app.use(express.json());
+
+const upsertWeatherPrev2MonthsData = async (pool, data) => {
+    const query = `
+        INSERT INTO myblog_prevmonths (name, metadata)
+        VALUES ($1, $2)
+        ON CONFLICT (name)
+        DO UPDATE SET metadata = EXCLUDED.metadata;
+    `;
+    const values = [data.name, data.metadata];
+
+    try {
+        await pool.query(query, values);
+        console.log(data.name + ' inserted into database!');
+    } catch (err) {
+        console.error('Error inserting data into database', err);
+    }
+};
+
+const upsertWeatherData = async (pool, data) => {
+    const query = `
+        INSERT INTO myblog_weather (name, metadata)
+        VALUES ($1, $2)
+        ON CONFLICT (name)
+        DO UPDATE SET metadata = EXCLUDED.metadata;
+    `;
+    const values = [data.name, data.metadata];
+
+    try {
+        await pool.query(query, values);
+        console.log(data.name + ' inserted into database!');
+    } catch (err) {
+        console.error('Error inserting data into database', err);
+    }
+};
 
 const generateTargetReports = async () => {
   const params = {
